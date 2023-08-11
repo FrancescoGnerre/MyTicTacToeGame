@@ -27,6 +27,15 @@ public class Block{
 	public int getY() {
 		return y;
 	}
+	public boolean isHeld(){
+		return held;
+	}
+	public void setHeld(boolean a){
+		held = a;
+	}
+	public void win(Color c){
+		color=c;
+	}
 	
 	public void drawMe(Graphics g)
 	{

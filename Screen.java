@@ -32,6 +32,10 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 	private Block[][] blocks = new Block[3][3];
 	private ArrayList<Player> players = new ArrayList<Player>();
 	private int turn;
+	private int[][] victory = new int[3][3];
+	private Color deep_blue;
+	private Color deep_green;
+	private Color deep_red;
 	
 	public Screen()
     {
@@ -39,13 +43,14 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 			
 		turn = 0;
 		
-		Color deep_green = new Color (0,212,0);
-		Color deep_red = new Color (212,0,0);
-		Color deep_blue = new Color (0,0,212);
+		deep_green = new Color (0,212,0);
+		deep_red = new Color (212,0,0);
+		deep_blue = new Color (0,0,212);
 		
 		for (int i = 0; i < 3; ++i){
 			for (int j = 0; j < 3; ++j){
 				blocks[i][j] = new Block(i*250,j*250,Color.white);
+				victory[i][j] = 0;
 			}
 		}
 	
@@ -154,7 +159,35 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 		
 		for (int i = 0; i < 3; ++i){
 			for (int j = 0; j < 3; ++j){
-				// collision detection
+				if (blocks[i][j].isHeld()==false &&
+					e.getX()>blocks[i][j].getX() && 
+					e.getX()<blocks[i][j].getX()+250 && 
+					e.getY()>blocks[i][j].getY() && 
+					e.getY()<blocks[i][j].getY()+250){
+						//
+					if (turn%2==0){
+						blocks[i][j].setHeld(true);
+						players.add(new X(i*250,j*250,deep_blue,i,j));
+						++turn;
+						victory[i][j] = 1;
+					}
+					else {
+						blocks[i][j].setHeld(true);
+						players.add(new O(i*250,j*250,deep_green,i,j));
+						++turn;
+						victory[i][j] = 2;
+					}
+				}
+			}
+		}
+		
+		
+		
+		if (turn>=9){
+			for (int i = 0; i < 3; ++i){
+				for (int j = 0; j < 3; ++j){
+					blocks[i][j].win(deep_red);
+				}
 			}
 		}
 	}

@@ -25,8 +25,6 @@ public class Player{
 		player = p;
 	}
 	
-	// this is a comment test
-	
 	public void setXY(int a,int b){
 		x = a;
 		y = b;
