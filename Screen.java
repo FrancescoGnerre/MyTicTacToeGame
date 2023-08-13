@@ -39,9 +39,22 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 	
 	public Screen()
     {
-		font = new Font("Arial", Font.PLAIN, 50);
+		font = new Font("Arial", Font.PLAIN, 25);
 			
 		turn = 0;
+		screen = "main";
+		
+		startGameButton = new JButton("Start Game");
+		startGameButton.setBounds(00,00,200,30); //Set the location and size
+        startGameButton.addActionListener(this); //Add the listener to the button
+		
+		helpButton = new JButton("Help");  //Instantiate the button
+        helpButton.setBounds(00,50,200,30); //Set the location and size
+        helpButton.addActionListener(this); //Add the listener to the button
+		
+		backButton = new JButton("Main Menu");  //Instantiate the button
+        backButton.setBounds(00,50,200,30); //Set the location and size
+        backButton.addActionListener(this); //Add the listener to the button
 		
 		deep_green = new Color (0,212,0);
 		deep_red = new Color (212,0,0);
@@ -50,7 +63,7 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 		for (int i = 0; i < 3; ++i){
 			for (int j = 0; j < 3; ++j){
 				blocks[i][j] = new Block(i*250,j*250,Color.white);
-				victory[i][j] = 0;
+				victory[i][j] = -10*(i+1) + -1 * (j+1);
 			}
 		}
 	
@@ -90,21 +103,38 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
         
         //Create a temporary graphics buffered to draw
         Graphics gBuff = buffered.createGraphics();
-		
-		gBuff.setColor(Color.black);
-		gBuff.fillRect(0,0,700,700);
-		gBuff.setColor(Color.white);
-		
-		for (int i = 0; i < 3; ++i){
-			for (int j = 0; j < 3; ++j){
-				blocks[i][j].drawMe(gBuff);
+
+		if (screen.equals("main")){
+			add(startGameButton); //Add button to JPanel
+			add(helpButton);
+			gBuff.setColor(Color.white);
+			gBuff.fillRect(0,0,700,700);
+		}
+
+		if (screen.equals("help")){
+			add(backButton);
+			gBuff.setColor(Color.white);
+			gBuff.fillRect(0,0,700,700);
+			gBuff.setColor(Color.black);
+			gBuff.setFont(font);
+			gBuff.drawString("This is a game of tic-tac-toe. glhf", 0, 20);
+		}
+
+		if (screen.equals("game")){
+			gBuff.setColor(Color.black);
+			gBuff.fillRect(0,0,700,700);
+			gBuff.setColor(Color.white);
+			
+			for (int i = 0; i < 3; ++i){
+				for (int j = 0; j < 3; ++j){
+					blocks[i][j].drawMe(gBuff);
+				}
+			}
+				
+			for (Player each: players){
+				each.drawMe(gBuff);
 			}
 		}
-			
-		for (Player each: players){
-			each.drawMe(gBuff);
-		}
-		
 		g.drawImage(buffered, 0, 0, null);
 	}
 	
@@ -156,37 +186,49 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
     }
     public void mouseReleased(MouseEvent e) 
 	{
-		
-		for (int i = 0; i < 3; ++i){
-			for (int j = 0; j < 3; ++j){
-				if (blocks[i][j].isHeld()==false &&
-					e.getX()>blocks[i][j].getX() && 
-					e.getX()<blocks[i][j].getX()+250 && 
-					e.getY()>blocks[i][j].getY() && 
-					e.getY()<blocks[i][j].getY()+250){
-						//
-					if (turn%2==0){
-						blocks[i][j].setHeld(true);
-						players.add(new X(i*250,j*250,deep_blue,i,j));
-						++turn;
-						victory[i][j] = 1;
-					}
-					else {
-						blocks[i][j].setHeld(true);
-						players.add(new O(i*250,j*250,deep_green,i,j));
-						++turn;
-						victory[i][j] = 2;
+		if (screen.equals("game")){
+			for (int i = 0; i < 3; ++i){
+				for (int j = 0; j < 3; ++j){
+					if (blocks[i][j].isHeld()==false &&
+						e.getX()>blocks[i][j].getX() && 
+						e.getX()<blocks[i][j].getX()+250 && 
+						e.getY()>blocks[i][j].getY() && 
+						e.getY()<blocks[i][j].getY()+250){
+							//
+						if (turn%2==0){
+							blocks[i][j].setHeld(true);
+							players.add(new X(i*250,j*250,deep_blue,i,j));
+							++turn;
+							victory[i][j] = 1;
+						}
+						else {
+							blocks[i][j].setHeld(true);
+							players.add(new O(i*250,j*250,deep_green,i,j));
+							++turn;
+							victory[i][j] = 2;
+						}
 					}
 				}
 			}
-		}
-		
-		
-		
-		if (turn>=9){
-			for (int i = 0; i < 3; ++i){
-				for (int j = 0; j < 3; ++j){
-					blocks[i][j].win(deep_red);
+			
+			//check for victory
+			if (victory[0][0] == victory[0][1] &&  victory[0][0]== victory[0][2] ||
+				victory[1][0] == victory[1][1] && victory[1][0] == victory[1][2] ||
+				victory[2][0] == victory[2][1] && victory[2][0] == victory[2][2] ||
+				victory[0][0] == victory[1][1] && victory[0][0] == victory[2][2] ||
+				victory[2][0] == victory[1][1] && victory[2][0] == victory[0][2] ||
+				victory[0][0] == victory[1][0] && victory[0][0] == victory[2][0] ||
+				victory[0][1] == victory[1][1] && victory[0][1] == victory[2][1] ||
+				victory[0][2] == victory[1][2] && victory[0][2] == victory[2][2]) {
+					System.out.println("GG");
+				}
+			
+			// check if impossible for either player to win
+			if (turn>=9){
+				for (int i = 0; i < 3; ++i){
+					for (int j = 0; j < 3; ++j){
+						blocks[i][j].win(deep_red);
+					}
 				}
 			}
 		}
@@ -203,6 +245,20 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 	//ACTIONS
 	public void actionPerformed(ActionEvent e)
     {
-		
+		if (e.getSource() == startGameButton){
+			screen = "game";
+			removeAll();
+			repaint();
+		}if (e.getSource() == helpButton)
+		{
+			screen = "help";
+			removeAll();
+			repaint();
+		}if (e.getSource() == backButton)
+		{
+			screen = "main";
+			removeAll();
+			repaint();
+		}
 	}
 }
