@@ -44,6 +44,7 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 	private ArrayList<JButton> setColor1 = new ArrayList<JButton>();
 	private ArrayList<JButton> setColor2 = new ArrayList<JButton>();
 	private int scHolder;
+	private JButton resetButton;
 	
 	public Screen()
     {
