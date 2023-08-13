@@ -27,6 +27,8 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 	private JButton startGameButton;
 	private JButton helpButton;
 	private JButton backButton;
+	private JButton p1ColorChooseButton;
+	private JButton p2ColorChooseButton;
 	private Font font;
 //	private ArrayList<Block> blocks = new ArrayList<Block>();
 	private Block[][] blocks = new Block[3][3];
