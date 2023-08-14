@@ -121,20 +121,6 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 			}
 		}
 	
-/*	
-		for (int i = 0; i < 3; ++i){
-			for (int j = 0; j < 3; ++j){
-			if (turn%2 == 0){
-				players.add(new X(i*250,j*250,deep_blue,i,j));
-				}
-			else {				
-				players.add(new O(i*250,j*250,deep_green,i,j));
-				}
-				++turn;
-			}
-		}
-	*/
-	
 		setFocusable(true);
 		addKeyListener(this);
 		addMouseListener(this);
@@ -198,7 +184,14 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 			gBuff.fillOval(475,175,150,150);
 		}
 
-		if (screen.equals("victory2")){
+		if (screen.equals("tie")){
+			gBuff.setColor(Color.white);
+			gBuff.fillRect(0,0,700,700);
+			gBuff.setColor(Color.black);
+			gBuff.setFont(font);
+			gBuff.drawString("Congratulations Players for the Tie", 0, 20);
+			add(resetButton);
+		}if (screen.equals("victory2")){
 			gBuff.setColor(Color.white);
 			gBuff.fillRect(0,0,700,700);
 			gBuff.setColor(Color.black);
@@ -332,6 +325,7 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 							blocks[i][j].win(deep_red);
 						}
 					}
+					screen = "tie";
 				}
 			}
 		}
@@ -352,8 +346,7 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 			screen = "game";
 			removeAll();
 			repaint();
-		}if (e.getSource() == helpButton)
-		{
+		}if (e.getSource() == helpButton){
 			screen = "help";
 			removeAll();
 			repaint();
@@ -364,6 +357,24 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 			repaint();
 		}if (e.getSource() == colorChooseButton){
 			screen = "colorSelect";
+			removeAll();
+			repaint();
+		}if (e.getSource() == resetButton){
+			screen = "main";
+			
+			for (int i = 0; i < 3; ++i){
+				for (int j = 0; j < 3; ++j){
+					victory[i][j] = -10*(i+1) + -1 * (j+1);
+					blocks[i][j].win(Color.white);
+					blocks[i][j].setHeld(false);
+				}
+			}
+			
+			players.clear();
+			
+			won = false;
+			turn = 0;
+			
 			removeAll();
 			repaint();
 		}
