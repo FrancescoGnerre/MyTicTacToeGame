@@ -70,6 +70,10 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 		colorChooseButton.setBounds(00,50,200,30);
 		colorChooseButton.addActionListener(this);
 		
+		resetButton = new JButton("Restart the Game");
+		resetButton.setBounds(250,335,200,30);
+		resetButton.addActionListener(this);
+		
 		colors.add(new Color(255,0,0));
 		colors.add(new Color(0,255,0));
 		colors.add(new Color(0,0,255));
@@ -200,6 +204,7 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 			gBuff.setColor(Color.black);
 			gBuff.setFont(font);
 			gBuff.drawString("Congratulations Player X", 0, 20);
+			add(resetButton);
 		}
 		if (screen.equals("victory1")){
 			gBuff.setColor(Color.white);
@@ -207,6 +212,7 @@ public class Screen extends JPanel implements KeyListener, MouseListener, Action
 			gBuff.setColor(Color.black);
 			gBuff.setFont(font);
 			gBuff.drawString("Congratulations Player O", 0, 20);
+			add(resetButton);
 		}
 
 		if (screen.equals("game")){
